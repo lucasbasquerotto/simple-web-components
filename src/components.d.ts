@@ -18,6 +18,12 @@ declare global {
   interface HTMLAttributes {}
 }
 
+import {
+  Element,
+} from '@stencil/core';
+import {
+  ChangeEvent,
+} from './components/virtual-scroll/virtual-scroll';
 
 import {
   MyComponent as MyComponent
@@ -45,6 +51,47 @@ declare global {
     export interface MyComponentAttributes extends HTMLAttributes {
       first?: string;
       last?: string;
+    }
+  }
+}
+
+
+import {
+  VirtualScrollComponent as SpVirtualScroll
+} from './components/virtual-scroll/virtual-scroll';
+
+declare global {
+  interface HTMLSpVirtualScrollElement extends SpVirtualScroll, HTMLStencilElement {
+  }
+  var HTMLSpVirtualScrollElement: {
+    prototype: HTMLSpVirtualScrollElement;
+    new (): HTMLSpVirtualScrollElement;
+  };
+  interface HTMLElementTagNameMap {
+    "sp-virtual-scroll": HTMLSpVirtualScrollElement;
+  }
+  interface ElementTagNameMap {
+    "sp-virtual-scroll": HTMLSpVirtualScrollElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      "sp-virtual-scroll": JSXElements.SpVirtualScrollAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface SpVirtualScrollAttributes extends HTMLAttributes {
+      bufferAmount?: number;
+      change?: (event: ChangeEvent) => void;
+      childHeight?: number;
+      childWidth?: number;
+      end?: (event: ChangeEvent) => void;
+      items?: any[];
+      parentScroll?: Element | Window;
+      scrollAnimationTime?: number;
+      scrollbarHeight?: number;
+      scrollbarWidth?: number;
+      start?: (event: ChangeEvent) => void;
+      update?: (list: any[]) => void;
     }
   }
 }

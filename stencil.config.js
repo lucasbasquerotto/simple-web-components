@@ -1,7 +1,13 @@
+const sass = require('@stencil/sass');
+
 exports.config = {
-  namespace: 'mycomponent',
+  namespace: 'simple-web-components',
   generateDistribution: true,
-  serviceWorker: false
+  serviceWorker: false,
+  enableCache: false,
+  plugins: [
+    sass()
+  ]
 };
 
 exports.devServer = {
