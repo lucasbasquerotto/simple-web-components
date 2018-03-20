@@ -19,9 +19,6 @@ declare global {
 }
 
 import {
-  Element,
-} from '@stencil/core';
-import {
   ChangeEvent,
 } from './components/virtual-scroll/virtual-scroll';
 
@@ -80,16 +77,12 @@ declare global {
   }
   namespace JSXElements {
     export interface SpVirtualScrollAttributes extends HTMLAttributes {
-      bufferAmount?: number;
+      buffer?: number;
       change?: (event: ChangeEvent) => void;
-      childHeight?: number;
-      childWidth?: number;
       end?: (event: ChangeEvent) => void;
       items?: any[];
-      parentScroll?: Element | Window;
+      parentScroll?: HTMLElement;
       scrollAnimationTime?: number;
-      scrollbarHeight?: number;
-      scrollbarWidth?: number;
       start?: (event: ChangeEvent) => void;
       update?: (list: any[]) => void;
     }

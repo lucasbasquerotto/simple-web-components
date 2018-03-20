@@ -16,28 +16,91 @@ export class MyComponent {
 	@Prop() first: string;
 	@Prop() last: string;
 
-	private items: Array<Item> = '.'.repeat(1000000).split('').map(
-		(_, idx) => ({ name: 'item-' + (idx + 1), text: 'Item ' + (idx + 1) })
-	);
+	private count = 0;
+	private amount = 40000;
+	private intervals = [3000, 6000];
+
+	@State() items: Array<Item> = this.createItems();
 	@State() scrollItems: Array<Item>;
 
 	private updateItems(scrollItems: Array<Item>) {
-		console.log('updateItems', scrollItems);		
+		console.log('updateItems', scrollItems, (this.items || []).length);		
 		this.scrollItems = scrollItems;
 	}
 
-	render() {
-		console.log('items', this.items);
+	private createItems() {
+		let aux = (this.count * this.amount) + 1;
+		this.count++;
+		let items = (this.items || []).concat('.'.repeat(this.amount).split('').map(
+			(_, idx) => ({ name: 'item-' + (idx + aux), text: 'Item ' + (idx + aux) })
+		));
 		
+		console.log('createItems', items.length);
+		
+		return items;
+	}
+
+	public componentDidLoad() {
+		for (let interval of (this.intervals || [])) {
+			setTimeout(() => this.items = this.createItems(), interval);
+		}
+	}
+
+	public render() {
 		return (
 			<div>
-				Hello, World! I'm {this.first} {this.last}
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
+				Hello, World! I'm {this.first} {this.last}<br/>
 
 				<sp-virtual-scroll 
 					items={this.items} 
 					update={scrollItems => this.updateItems(scrollItems)}
-					childHeight={30}
 					parentScroll={this.el}
+					buffer={10}
 				>
 					{(this.scrollItems || []).map(item => {				
 						return (<div class={item.name} style={ {'width': '100%'} }>{item.text}</div>)
