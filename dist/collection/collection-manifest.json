@@ -1,0 +1,93 @@
+{
+  "components": [
+    {
+      "tag": "my-component",
+      "dependencies": [
+        "sp-virtual-scroll"
+      ],
+      "componentClass": "MyComponent",
+      "componentPath": "components/my-component/my-component.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/my-component/my-component.css"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "first",
+          "type": "String"
+        },
+        {
+          "name": "last",
+          "type": "String"
+        }
+      ],
+      "states": [
+        {
+          "name": "items"
+        },
+        {
+          "name": "scrollItems"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      },
+      "shadow": true
+    },
+    {
+      "tag": "sp-virtual-scroll",
+      "dependencies": [],
+      "componentClass": "VirtualScrollComponent",
+      "componentPath": "components/virtual-scroll/virtual-scroll.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/virtual-scroll/virtual-scroll.pcss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "buffer",
+          "type": "Number"
+        },
+        {
+          "name": "items"
+        },
+        {
+          "name": "onEnd"
+        },
+        {
+          "name": "onStart"
+        },
+        {
+          "name": "onUpdate"
+        },
+        {
+          "name": "onVirtualChange"
+        },
+        {
+          "name": "parentScroll"
+        },
+        {
+          "name": "scrollAnimationTime",
+          "type": "Number"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      },
+      "shadow": true
+    }
+  ],
+  "collections": [],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "0.6.18",
+    "typescriptVersion": "2.7.2"
+  },
+  "bundles": []
+}
