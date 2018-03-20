@@ -31,9 +31,11 @@ export class MyComponent {
 	private createItems() {
 		let aux = (this.count * this.amount) + 1;
 		this.count++;
-		let items = (this.items || []).concat('.'.repeat(this.amount).split('').map(
-			(_, idx) => ({ name: 'item-' + (idx + aux), text: 'Item ' + (idx + aux) })
-		));
+		let items = (this.items || []).concat('.'.repeat(this.amount).split('').map((_, idx) => ({ 
+			name: 'item-' + (idx + aux), 
+			text: 'Item ' + (idx + aux),
+			// text: 'Item ' + ((this.amount * (this.intervals.length + 1)) - (idx + aux)),
+		})));
 		
 		console.log('createItems', items.length);
 		
@@ -50,62 +52,25 @@ export class MyComponent {
 		return (
 			<div>
 				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
-				Hello, World! I'm {this.first} {this.last}<br/>
 
 				<sp-virtual-scroll 
 					items={this.items} 
-					update={scrollItems => this.updateItems(scrollItems)}
+					onUpdate={scrollItems => this.updateItems(scrollItems)}
+					onVirtualChange={event => console.log('onVirtualChange', event)}
+					onStart={event => console.log('onStart', event)}
+					onEnd={event => console.log('onEnd', event)}
 					parentScroll={this.el}
 					buffer={10}
 				>
 					{(this.scrollItems || []).map(item => {				
-						return (<div class={item.name} style={ {'width': '100%'} }>{item.text}</div>)
+						return (<div class={item.name} style={ {'width': '100%'} }>
+							<div style={ {'width': '100%'} }>{item.text}</div>
+							{item.text.split('').map(c => <div style={ {'width': '100%'} }>|{c}|</div>)}
+						</div>);
 					})}
 				</sp-virtual-scroll>
+				
+				Hello, World! I'm {this.first} {this.last}<br/>
 			</div>
 		);
 	}
