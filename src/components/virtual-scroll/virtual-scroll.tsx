@@ -8,7 +8,7 @@ export interface ChangeEvent {
 
 @Component({
 	tag: 'sp-virtual-scroll',
-	styleUrl: 'virtual-scroll.scss',
+	styleUrl: 'virtual-scroll.pcss',
 	shadow: true
 })
 export class VirtualScrollComponent {

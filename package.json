@@ -19,13 +19,16 @@
   },
   "dependencies": {
     "@stencil/core": "^0.6.18",
-    "@stencil/sass": "0.0.3",
     "@tweenjs/tween.js": "^17.2.0"
   },
   "devDependencies": {
     "@stencil/dev-server": "latest",
+    "@stencil/postcss": "0.0.4",
+    "@stencil/sass": "0.0.3",
     "@stencil/utils": "latest",
     "@types/jest": "^21.1.1",
+    "autoprefixer": "^8.1.0",
+    "cq-prolyfill": "^0.4.0",
     "jest": "^21.2.1"
   },
   "repository": {

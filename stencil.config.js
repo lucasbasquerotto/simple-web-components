@@ -1,4 +1,5 @@
-const sass = require('@stencil/sass');
+const postcss = require('@stencil/postcss');
+const autoprefixer = require('autoprefixer');
 
 exports.config = {
   namespace: 'simple-web-components',
@@ -6,7 +7,11 @@ exports.config = {
   serviceWorker: false,
   enableCache: false,
   plugins: [
-    sass()
+    postcss({
+		plugins: [
+			autoprefixer()
+		],		
+	})
   ]
 };
 
