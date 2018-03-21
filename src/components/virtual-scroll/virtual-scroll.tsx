@@ -2,7 +2,7 @@ import { Component, Element, Prop } from '@stencil/core';
 
 // import * as tween from '@tweenjs/tween.js';
 
-export interface ChangeEvent {
+export interface VirtualScrollChangeEvent {
 	start?: number;
 	end?: number;
 }
@@ -26,11 +26,11 @@ export class VirtualScrollComponent {
 
 	@Prop() update: (list: any[]) => void;	
 
-	@Prop() change: (event: ChangeEvent) => void;
+	@Prop() change: (event: VirtualScrollChangeEvent) => void;
 
-	@Prop() start: (event: ChangeEvent) => void;
+	@Prop() start: (event: VirtualScrollChangeEvent) => void;
 
-	@Prop() end: (event: ChangeEvent) => void;
+	@Prop() end: (event: VirtualScrollChangeEvent) => void;
 
 	private viewPortItems: any[];
 	private previousStart: number;

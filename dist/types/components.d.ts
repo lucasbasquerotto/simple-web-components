@@ -20,7 +20,7 @@ declare global {
 }
 
 import {
-  ChangeEvent,
+  VirtualScrollChangeEvent,
 } from './components/virtual-scroll/virtual-scroll';
 
 import {
@@ -79,12 +79,12 @@ declare global {
   namespace JSXElements {
     export interface SpVirtualScrollAttributes extends HTMLAttributes {
       buffer?: number;
-      change?: (event: ChangeEvent) => void;
-      end?: (event: ChangeEvent) => void;
+      change?: (event: VirtualScrollChangeEvent) => void;
+      end?: (event: VirtualScrollChangeEvent) => void;
       items?: any[];
       parentScroll?: HTMLElement;
       scrollAnimationTime?: number;
-      start?: (event: ChangeEvent) => void;
+      start?: (event: VirtualScrollChangeEvent) => void;
       update?: (list: any[]) => void;
     }
   }

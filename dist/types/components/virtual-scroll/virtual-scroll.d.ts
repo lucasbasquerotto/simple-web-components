@@ -1,5 +1,5 @@
 import '../../stencil.core';
-export interface ChangeEvent {
+export interface VirtualScrollChangeEvent {
     start?: number;
     end?: number;
 }
@@ -10,9 +10,9 @@ export declare class VirtualScrollComponent {
     scrollAnimationTime: number;
     parentScroll: HTMLElement;
     update: (list: any[]) => void;
-    change: (event: ChangeEvent) => void;
-    start: (event: ChangeEvent) => void;
-    end: (event: ChangeEvent) => void;
+    change: (event: VirtualScrollChangeEvent) => void;
+    start: (event: VirtualScrollChangeEvent) => void;
+    end: (event: VirtualScrollChangeEvent) => void;
     private viewPortItems;
     private previousStart;
     private previousStartBuffer;

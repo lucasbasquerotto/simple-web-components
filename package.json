@@ -18,8 +18,7 @@
     "test.watch": "jest --watch --no-cache"
   },
   "dependencies": {
-    "@stencil/core": "^0.6.18",
-    "@tweenjs/tween.js": "^17.2.0"
+    "@stencil/core": "^0.6.18"
   },
   "devDependencies": {
     "@stencil/dev-server": "latest",
@@ -33,14 +32,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ionic-team/stencil-component-starter.git"
+    "url": "git+https://github.com/lucasbasquerotto/simple-web-components.git"
   },
-  "author": "Ionic Team",
+  "author": "Lucas Basquerotto",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ionic-team/stencil"
+    "url": "https://github.com/lucasbasquerotto/simple-web-components"
   },
-  "homepage": "https://github.com/ionic-team/stencil",
+  "homepage": "https://github.com/lucasbasquerotto/simple-web-components",
   "jest": {
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
