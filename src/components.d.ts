@@ -78,13 +78,13 @@ declare global {
   namespace JSXElements {
     export interface SpVirtualScrollAttributes extends HTMLAttributes {
       buffer?: number;
+      change?: (event: ChangeEvent) => void;
+      end?: (event: ChangeEvent) => void;
       items?: any[];
-      onEnd?: (event: ChangeEvent) => void;
-      onStart?: (event: ChangeEvent) => void;
-      onUpdate?: (list: any[]) => void;
-      onVirtualChange?: (event: ChangeEvent) => void;
       parentScroll?: HTMLElement;
       scrollAnimationTime?: number;
+      start?: (event: ChangeEvent) => void;
+      update?: (list: any[]) => void;
     }
   }
 }

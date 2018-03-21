@@ -9,10 +9,10 @@ export declare class VirtualScrollComponent {
     buffer: number;
     scrollAnimationTime: number;
     parentScroll: HTMLElement;
-    onUpdate: (list: any[]) => void;
-    onVirtualChange: (event: ChangeEvent) => void;
-    onStart: (event: ChangeEvent) => void;
-    onEnd: (event: ChangeEvent) => void;
+    update: (list: any[]) => void;
+    change: (event: ChangeEvent) => void;
+    start: (event: ChangeEvent) => void;
+    end: (event: ChangeEvent) => void;
     private viewPortItems;
     private previousStart;
     private previousStartBuffer;

@@ -31,7 +31,7 @@ export class MyComponent {
             " ",
             this.last,
             h("br", null),
-            h("sp-virtual-scroll", { items: this.items, onUpdate: scrollItems => this.updateItems(scrollItems), onVirtualChange: event => console.log('onVirtualChange', event), onStart: event => console.log('onStart', event), onEnd: event => console.log('onEnd', event), parentScroll: this.el, buffer: 10 }, (this.scrollItems || []).map(item => {
+            h("sp-virtual-scroll", { items: this.items, update: scrollItems => this.updateItems(scrollItems), change: event => console.log('onVirtualChange', event), start: event => console.log('onStart', event), end: event => console.log('onEnd', event), parentScroll: this.el, buffer: 10 }, (this.scrollItems || []).map(item => {
                 return (h("div", { class: item.name, style: { 'width': '100%' } },
                     h("div", { style: { 'width': '100%' } }, item.text),
                     item.text.split('').map(c => h("div", { style: { 'width': '100%' } },

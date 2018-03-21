@@ -55,19 +55,13 @@
           "type": "Number"
         },
         {
+          "name": "change"
+        },
+        {
+          "name": "end"
+        },
+        {
           "name": "items"
-        },
-        {
-          "name": "onEnd"
-        },
-        {
-          "name": "onStart"
-        },
-        {
-          "name": "onUpdate"
-        },
-        {
-          "name": "onVirtualChange"
         },
         {
           "name": "parentScroll"
@@ -75,6 +69,12 @@
         {
           "name": "scrollAnimationTime",
           "type": "Number"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "update"
         }
       ],
       "hostElement": {

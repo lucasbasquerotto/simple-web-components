@@ -56,15 +56,15 @@ export class VirtualScrollComponent {
         if ((start !== this.previousStart) || (end !== this.previousEnd) || (forceUpdate === true)) {
             let items = this.items || [];
             this.viewPortItems = items.slice(startBuffer, endBuffer);
-            this.onUpdate && this.onUpdate(this.viewPortItems);
+            this.update && this.update(this.viewPortItems);
             console.log('slice', start, end, startBuffer, endBuffer);
             // emit 'start' event
             if ((start !== this.previousStart) && (start === 0)) {
-                this.onStart && this.onStart({ start, end });
+                this.start && this.start({ start, end });
             }
             // emit 'end' event
             if ((end !== this.previousEnd) && (end === (items.length - 1))) {
-                this.onEnd && this.onEnd({ start, end });
+                this.end && this.end({ start, end });
             }
             this.previousStart = start;
             this.previousStartBuffer = startBuffer;
@@ -227,6 +227,6 @@ export class VirtualScrollComponent {
     }
     static get is() { return "sp-virtual-scroll"; }
     static get encapsulation() { return "shadow"; }
-    static get properties() { return { "buffer": { "type": Number, "attr": "buffer" }, "el": { "elementRef": true }, "items": { "type": "Any", "attr": "items" }, "onEnd": { "type": "Any", "attr": "on-end" }, "onStart": { "type": "Any", "attr": "on-start" }, "onUpdate": { "type": "Any", "attr": "on-update" }, "onVirtualChange": { "type": "Any", "attr": "on-virtual-change" }, "parentScroll": { "type": "Any", "attr": "parent-scroll" }, "scrollAnimationTime": { "type": Number, "attr": "scroll-animation-time" } }; }
+    static get properties() { return { "buffer": { "type": Number, "attr": "buffer" }, "change": { "type": "Any", "attr": "change" }, "el": { "elementRef": true }, "end": { "type": "Any", "attr": "end" }, "items": { "type": "Any", "attr": "items" }, "parentScroll": { "type": "Any", "attr": "parent-scroll" }, "scrollAnimationTime": { "type": Number, "attr": "scroll-animation-time" }, "start": { "type": "Any", "attr": "start" }, "update": { "type": "Any", "attr": "update" } }; }
     static get style() { return "/**style-placeholder:sp-virtual-scroll:**/"; }
 }

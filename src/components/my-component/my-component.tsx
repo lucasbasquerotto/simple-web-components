@@ -55,10 +55,10 @@ export class MyComponent {
 
 				<sp-virtual-scroll 
 					items={this.items} 
-					onUpdate={scrollItems => this.updateItems(scrollItems)}
-					onVirtualChange={event => console.log('onVirtualChange', event)}
-					onStart={event => console.log('onStart', event)}
-					onEnd={event => console.log('onEnd', event)}
+					update={scrollItems => this.updateItems(scrollItems)}
+					change={event => console.log('onVirtualChange', event)}
+					start={event => console.log('onStart', event)}
+					end={event => console.log('onEnd', event)}
 					parentScroll={this.el}
 					buffer={10}
 				>

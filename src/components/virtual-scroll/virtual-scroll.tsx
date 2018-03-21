@@ -24,13 +24,13 @@ export class VirtualScrollComponent {
 	
 	@Prop() parentScroll: HTMLElement;
 
-	@Prop() onUpdate: (list: any[]) => void;	
+	@Prop() update: (list: any[]) => void;	
 
-	@Prop() onVirtualChange: (event: ChangeEvent) => void;
+	@Prop() change: (event: ChangeEvent) => void;
 
-	@Prop() onStart: (event: ChangeEvent) => void;
+	@Prop() start: (event: ChangeEvent) => void;
 
-	@Prop() onEnd: (event: ChangeEvent) => void;
+	@Prop() end: (event: ChangeEvent) => void;
 
 	private viewPortItems: any[];
 	private previousStart: number;
@@ -109,18 +109,18 @@ export class VirtualScrollComponent {
 		if ((start !== this.previousStart) || (end !== this.previousEnd) || (forceUpdate === true)) {
 			let items = this.items || [];
 			this.viewPortItems = items.slice(startBuffer, endBuffer);
-			this.onUpdate && this.onUpdate(this.viewPortItems);
+			this.update && this.update(this.viewPortItems);
 
 			console.log('slice', start, end, startBuffer, endBuffer);				
 
 			// emit 'start' event
 			if ((start !== this.previousStart) && (start === 0)) {
-				this.onStart && this.onStart({ start, end });
+				this.start && this.start({ start, end });
 			}
 
 			// emit 'end' event
 			if ((end !== this.previousEnd) && (end === (items.length - 1))) {
-				this.onEnd && this.onEnd({ start, end });
+				this.end && this.end({ start, end });
 			}
 
 			this.previousStart = start;
