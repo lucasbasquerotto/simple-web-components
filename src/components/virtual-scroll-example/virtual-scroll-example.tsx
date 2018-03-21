@@ -1,15 +1,16 @@
 import { Component, Element, Prop, State } from '@stencil/core';
 
-interface Item {
+export interface VirtualScrollExampleItem {
 	name: string;
 	text: string;
 }
+
 @Component({
-	tag: 'my-component',
-	styleUrl: 'my-component.css',
+	tag: 'virtual-scroll-example',
+	styleUrl: 'virtual-scroll-example.pcss',
 	shadow: true
 })
-export class MyComponent {
+export class VirtualScrollExample {
 
 	@Element() el: HTMLElement;
 
@@ -20,10 +21,10 @@ export class MyComponent {
 	private amount = 40000;
 	private intervals = [3000, 6000];
 
-	@State() items: Array<Item> = this.createItems();
-	@State() scrollItems: Array<Item>;
+	@State() items: Array<VirtualScrollExampleItem> = this.createItems();
+	@State() scrollItems: Array<VirtualScrollExampleItem>;
 
-	private updateItems(scrollItems: Array<Item>) {
+	private updateItems(scrollItems: Array<VirtualScrollExampleItem>) {
 		console.log('updateItems', scrollItems, (this.items || []).length);		
 		this.scrollItems = scrollItems;
 	}
@@ -48,7 +49,7 @@ export class MyComponent {
 		}
 	}
 
-	public render() {
+	render() {
 		return (
 			<div>
 				Hello, World! I'm {this.first} {this.last}<br/>

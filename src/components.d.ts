@@ -23,29 +23,29 @@ import {
 } from './components/virtual-scroll/virtual-scroll';
 
 import {
-  MyComponent as MyComponent
-} from './components/my-component/my-component';
+  VirtualScrollExample as VirtualScrollExample
+} from './components/virtual-scroll-example/virtual-scroll-example';
 
 declare global {
-  interface HTMLMyComponentElement extends MyComponent, HTMLStencilElement {
+  interface HTMLVirtualScrollExampleElement extends VirtualScrollExample, HTMLStencilElement {
   }
-  var HTMLMyComponentElement: {
-    prototype: HTMLMyComponentElement;
-    new (): HTMLMyComponentElement;
+  var HTMLVirtualScrollExampleElement: {
+    prototype: HTMLVirtualScrollExampleElement;
+    new (): HTMLVirtualScrollExampleElement;
   };
   interface HTMLElementTagNameMap {
-    "my-component": HTMLMyComponentElement;
+    "virtual-scroll-example": HTMLVirtualScrollExampleElement;
   }
   interface ElementTagNameMap {
-    "my-component": HTMLMyComponentElement;
+    "virtual-scroll-example": HTMLVirtualScrollExampleElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      "my-component": JSXElements.MyComponentAttributes;
+      "virtual-scroll-example": JSXElements.VirtualScrollExampleAttributes;
     }
   }
   namespace JSXElements {
-    export interface MyComponentAttributes extends HTMLAttributes {
+    export interface VirtualScrollExampleAttributes extends HTMLAttributes {
       first?: string;
       last?: string;
     }

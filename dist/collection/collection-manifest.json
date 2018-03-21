@@ -1,43 +1,6 @@
 {
   "components": [
     {
-      "tag": "my-component",
-      "dependencies": [
-        "sp-virtual-scroll"
-      ],
-      "componentClass": "MyComponent",
-      "componentPath": "components/my-component/my-component.js",
-      "styles": {
-        "$": {
-          "stylePaths": [
-            "components/my-component/my-component.css"
-          ]
-        }
-      },
-      "props": [
-        {
-          "name": "first",
-          "type": "String"
-        },
-        {
-          "name": "last",
-          "type": "String"
-        }
-      ],
-      "states": [
-        {
-          "name": "items"
-        },
-        {
-          "name": "scrollItems"
-        }
-      ],
-      "hostElement": {
-        "name": "el"
-      },
-      "shadow": true
-    },
-    {
       "tag": "sp-virtual-scroll",
       "dependencies": [],
       "componentClass": "VirtualScrollComponent",
@@ -75,6 +38,43 @@
         },
         {
           "name": "update"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      },
+      "shadow": true
+    },
+    {
+      "tag": "virtual-scroll-example",
+      "dependencies": [
+        "sp-virtual-scroll"
+      ],
+      "componentClass": "VirtualScrollExample",
+      "componentPath": "components/virtual-scroll-example/virtual-scroll-example.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/virtual-scroll-example/virtual-scroll-example.pcss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "first",
+          "type": "String"
+        },
+        {
+          "name": "last",
+          "type": "String"
+        }
+      ],
+      "states": [
+        {
+          "name": "items"
+        },
+        {
+          "name": "scrollItems"
         }
       ],
       "hostElement": {

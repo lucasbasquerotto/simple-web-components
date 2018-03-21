@@ -1,4 +1,4 @@
-export class MyComponent {
+export class VirtualScrollExample {
     constructor() {
         this.count = 0;
         this.amount = 40000;
@@ -45,8 +45,8 @@ export class MyComponent {
             this.last,
             h("br", null)));
     }
-    static get is() { return "my-component"; }
+    static get is() { return "virtual-scroll-example"; }
     static get encapsulation() { return "shadow"; }
     static get properties() { return { "el": { "elementRef": true }, "first": { "type": String, "attr": "first" }, "items": { "state": true }, "last": { "type": String, "attr": "last" }, "scrollItems": { "state": true } }; }
-    static get style() { return "/**style-placeholder:my-component:**/"; }
+    static get style() { return "/**style-placeholder:virtual-scroll-example:**/"; }
 }

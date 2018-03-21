@@ -1,16 +1,16 @@
 import { flush, render } from '@stencil/core/testing';
-import { MyComponent } from './my-component';
+import { VirtualScrollExample } from './virtual-scroll-example';
 
 describe('my-component', () => {
   it('should build', () => {
-    expect(new MyComponent()).toBeTruthy();
+    expect(new VirtualScrollExample()).toBeTruthy();
   });
 
   describe('rendering', () => {
     let element;
     beforeEach(async () => {
       element = await render({
-        components: [MyComponent],
+        components: [VirtualScrollExample],
         html: '<my-component></my-component>'
       });
     });
