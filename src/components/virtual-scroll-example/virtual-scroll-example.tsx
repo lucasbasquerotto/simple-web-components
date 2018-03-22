@@ -18,8 +18,10 @@ export class VirtualScrollExample {
 	@Prop() last: string;
 
 	private count = 0;
-	private amount = 40000;
+	private amount = 400;//00;
+	private repeater = '.'.repeat(0).split('');
 	private intervals = [3000, 6000];
+	private parentScroll: HTMLElement;
 
 	@State() items: Array<VirtualScrollExampleItem> = this.createItems();
 	@State() scrollItems: Array<VirtualScrollExampleItem>;
@@ -44,6 +46,8 @@ export class VirtualScrollExample {
 	}
 
 	public componentDidLoad() {
+		this.parentScroll = null;//this.el.shadowRoot.querySelector('.container');
+
 		for (let interval of (this.intervals || [])) {
 			setTimeout(() => this.items = this.createItems(), interval);
 		}
@@ -51,27 +55,39 @@ export class VirtualScrollExample {
 
 	render() {
 		return (
-			<div>
-				Hello, World! I'm {this.first} {this.last}<br/>
-
+			<div class={this.parentScroll ? 'container scroll-wrapper' : 'container'}>
+				{(!this.parentScroll) ? null : this.repeater.map(
+					() => (<div>Top Hello, World! I'm {this.first} {this.last}<br/><br/></div>)
+				)}
+				
 				<sp-virtual-scroll 
 					items={this.items} 
 					update={scrollItems => this.updateItems(scrollItems)}
 					change={event => console.log('onVirtualChange', event)}
 					start={event => console.log('onStart', event)}
 					end={event => console.log('onEnd', event)}
-					parentScroll={this.el}
+					parentScroll={this.parentScroll}
 					buffer={10}
 				>
+					<div slot="top">
+						{this.repeater.map(() => <div>Top Section 0123456789 0123456789 0123456789<br/></div>)}
+					</div>
+
 					{(this.scrollItems || []).map(item => {				
 						return (<div class={item.name} style={ {'width': '100%'} }>
 							<div style={ {'width': '100%'} }>{item.text}</div>
 							{item.text.split('').map(c => <div style={ {'width': '100%'} }>|{c}|</div>)}
 						</div>);
 					})}
+
+					<div slot="bottom">
+						{this.repeater.map(() => <div>Bottom Section 0123456789 0123456789 0123456789<br/></div>)}
+					</div>
 				</sp-virtual-scroll>
 				
-				Hello, World! I'm {this.first} {this.last}<br/>
+				{(!this.parentScroll) ? null : this.repeater.map(
+					() => (<div>Bottom Hello, World! I'm {this.first} {this.last}<br/><br/></div>)
+				)}
 			</div>
 		);
 	}

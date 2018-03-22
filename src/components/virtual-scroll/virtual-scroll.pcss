@@ -1,9 +1,21 @@
-:host {
-	overflow: hidden;
-	overflow-y: hidden;
+.scroll-wrapper {
 	position: relative;
 	display: block;
+	overflow-y: auto;
+	height: 100%;
+}
+
+.scroll-inner {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	overflow-y: hidden;
 	-webkit-overflow-scrolling: touch;
+}
+
+.total-padding {
+	width: 1px;
+	opacity: 0;
 }
 
 .scrollable-content {
@@ -12,9 +24,4 @@
 	width: 100%;
 	height: 100%;
 	position: absolute;
-}
-
-.total-padding {
-	width: 1px;
-	opacity: 0;
 }

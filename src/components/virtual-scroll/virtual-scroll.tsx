@@ -32,6 +32,8 @@ export class VirtualScrollComponent {
 
 	@Prop() end: (event: VirtualScrollChangeEvent) => void;
 
+	private lastParentScroll: HTMLElement;
+	private lastItems: any[];
 	private viewPortItems: any[];
 	private previousStart: number;
 	private previousStartBuffer: number;
@@ -53,14 +55,10 @@ export class VirtualScrollComponent {
 		console.log('virtual-scroll');	
 	}
 
-	public componentWillLoad() {
-		console.log('componentWillLoad');
-		this.addParentEventHandlers(this.parentScroll || this.el);
-	}
-
 	public componentDidLoad() {
 		console.log('componentDidLoad');
-		this.refresh();
+		this.addParentEventHandlers();
+		this.refresh(true);
 	}
 
 	public componentDidUnload() {
@@ -68,23 +66,31 @@ export class VirtualScrollComponent {
 	}
 
 	public componentWillUpdate() {
-		console.log('componentWillUpdate');
-		this.refresh();
+		const force = (this.items !== this.lastItems);
+		console.log('componentWillUpdate', force);
+		this.lastItems = this.items;
+		this.addParentEventHandlers();
+		this.refresh(force);
 	}
 
 	public refresh(forceViewportUpdate: boolean = false) {	
 		window.requestAnimationFrame(() => this.calculateItems(forceViewportUpdate));
 	}
 
-	private addParentEventHandlers(parentScroll: HTMLElement) {
-		this.removeParentEventHandlers();
-		console.log('parentScroll');	
-
-		if (parentScroll) {
-			const handler = () => this.refresh();
-
-			parentScroll.addEventListener('scroll', handler);
-			this.disposeScrollHandler = () => parentScroll.removeEventListener('scroll', handler);
+	private addParentEventHandlers() {
+		if (this.parentScroll !== this.lastParentScroll) {
+			this.lastParentScroll = this.parentScroll;
+			let scrollWrapper = this.getScrollWrapper();
+	
+			this.removeParentEventHandlers();
+			console.log('scrollWrapper', scrollWrapper);	
+	
+			if (scrollWrapper) {
+				const handler = () => this.refresh();
+	
+				scrollWrapper.addEventListener('scroll', handler);
+				this.disposeScrollHandler = () => scrollWrapper.removeEventListener('scroll', handler);
+			}
 		}
 	}
 
@@ -95,43 +101,74 @@ export class VirtualScrollComponent {
 		}
 	}
 
+	private getScrollWrapper(): HTMLElement {
+		if (this.parentScroll) {
+			return this.parentScroll;
+		}
+
+		let root = this.el.shadowRoot || this.el;
+		return root && root.querySelector('.scroll-wrapper');
+	}
+
 	private getContent(): HTMLElement {
-		return this.el.shadowRoot.querySelector('.scrollable-content');
+		let root = this.el.shadowRoot || this.el;
+		return root && root.querySelector('.scrollable-content');
 	}
 
 	private getShimElement(): HTMLElement {
-		return (this.el.shadowRoot.querySelector('.total-padding') as HTMLElement);
+		let root = this.el.shadowRoot || this.el;
+		return root && root.querySelector('.total-padding');
+	}
+
+	private getChildren(): Array<HTMLElement> {
+		let childrenContent = this.el.shadowRoot && this.el.children;
+
+		if (!this.el.shadowRoot) {
+			const content = this.getContent();
+			childrenContent = content.children;
+		}
+
+		let children: Array<HTMLElement> = null;
+
+		if (childrenContent) {
+			children = (Array.from(childrenContent) as Array<HTMLElement>);
+		}
+
+		return children;
 	}
 
 	private calculateItems(forceUpdate: boolean = false) {
 		let { start = 0, startBuffer = 0, end = 0, endBuffer = 0 } = this.calculateValues();
+		const changed = (start !== this.previousStart) || (end !== this.previousEnd);
 
-		if ((start !== this.previousStart) || (end !== this.previousEnd) || (forceUpdate === true)) {
+		if (changed || forceUpdate) {
 			let items = this.items || [];
 			this.viewPortItems = items.slice(startBuffer, endBuffer);
 			this.update && this.update(this.viewPortItems);
 
-			console.log('slice', start, end, startBuffer, endBuffer);				
+			console.log('slice', start, end, startBuffer, endBuffer, changed);	
 
-			// emit 'start' event
-			if ((start !== this.previousStart) && (start === 0)) {
-				this.start && this.start({ start, end });
-			}
+			if (changed) {
+				// emit 'start' event
+				if ((start !== this.previousStart) && (start === 0)) {
+					this.start && this.start({ start, end });
+				}
+	
+				// emit 'end' event
+				if ((end !== this.previousEnd) && (end === (items.length - 1))) {
+					this.end && this.end({ start, end });
+				}
+	
+				this.previousStart = start;
+				this.previousStartBuffer = startBuffer;
+				this.previousEnd = end;
 
-			// emit 'end' event
-			if ((end !== this.previousEnd) && (end === (items.length - 1))) {
-				this.end && this.end({ start, end });
-			}
-
-			this.previousStart = start;
-			this.previousStartBuffer = startBuffer;
-			this.previousEnd = end;
-
-			const showAmount = end - start;
-
-			if (!this.showAmountLoop.has(showAmount)) {
-				this.showAmountLoop.add(showAmount);
-				return this.refresh();
+				const showAmount = end - start;
+	
+				if (!this.showAmountLoop.has(showAmount)) {
+					this.showAmountLoop.add(showAmount);
+					return this.refresh();
+				}
 			}
 		}
 
@@ -139,21 +176,22 @@ export class VirtualScrollComponent {
 	}
 
 	private calculateValues() {
-		let el = this.parentScroll || this.el;
+		let el = this.getScrollWrapper();
 		let elScrollTop = el.scrollTop;
-		let childrenContent = this.el.children;
+		let children = this.getChildren();
 		let itemCount = (this.items || []).length;
 
 		let offsetTop = this.parentScroll ? this.el.offsetTop : 0;
 		let scrollHeight = Math.max(0, (this.totalScrollHeight || 0) - offsetTop);
 		let scrollTop = Math.max(0, elScrollTop - offsetTop);
-		let viewHeight = el.clientHeight || 0;
+		let viewHeight = el.clientHeight || 0;		
 
 		let startIdx = 0;
 		let showCount = 0;
 		let heightAvg = 0;
+		let slotHeight = 0;
 
-		if (childrenContent && childrenContent.length) {
+		if (children && children.length) {
 			let previousStart = this.previousStartBuffer || 0;
 
 			let current = previousStart;
@@ -180,32 +218,28 @@ export class VirtualScrollComponent {
 				cumulativeHeight = cumulativeHeights[current - 1];
 			}
 
-			console.log('current0', current, previousStart);
-
-			for (let child of Array.from(childrenContent)) {
+			for (let child of children) {
 				let childHeight = child.getBoundingClientRect().height || heightAvg;
+				const slot = child.attributes.getNamedItem('slot');	
 				
-				// console.log('childHeight', childHeight, previousStart, len, current, cumulativeHeight);
-
-				cumulativeHeight += childHeight;
-				cumulativeHeights[current] = cumulativeHeight;
-
-				current++;
+				if (slot) {
+					slotHeight += childHeight;
+				} else {
+					console.log('child', child.clientTop, child.scrollTop, child.offsetTop, cumulativeHeight);
+					
+					cumulativeHeight += childHeight;
+					cumulativeHeights[current] = cumulativeHeight;
+					current++;
+				}
 			}
 
-			heightAvg = Math.max(cumulativeHeight / current, 1);
-
-			console.log('current1', current);
-			
+			heightAvg = Math.max(cumulativeHeight / current, 1);			
 
 			while ((scrollTop + viewHeight > cumulativeHeight) && (current < itemCount)) {
 				cumulativeHeight += heightAvg;
 				cumulativeHeights[current] = cumulativeHeight;
 				current++;
-			}
-
-			console.log('cumulativeHeight', cumulativeHeight, cumulativeHeights.length, current);
-			
+			}			
 
 			this.cumulativeHeights = cumulativeHeights.slice(0, current);
 
@@ -276,7 +310,7 @@ export class VirtualScrollComponent {
 			this.lastTopPadding = topPadding;
 		}
 
-		scrollHeight = heightAvg * itemCount;
+		scrollHeight = (heightAvg * itemCount) + slotHeight;
 		const totalScrollHeight = Math.max(0, scrollHeight + offsetTop);
 
 		if (totalScrollHeight !== this.totalScrollHeight) {
@@ -287,7 +321,9 @@ export class VirtualScrollComponent {
 			console.log('totalScrollHeight', totalScrollHeight, scrollHeight, itemCount);	
 		}
 
-		console.log('calc', start, startBuffer, end, endBuffer, showCount, scrollTop, scrollHeight);
+		console.log('viewHeight', viewHeight, offsetTop, heightAvg);
+
+		console.log('calc', start, startBuffer, end, endBuffer, ' - ', startIdx, showCount, ' - ', slotHeight, scrollTop, scrollHeight);
 
 		return { start, startBuffer, end, endBuffer, showCount };
 	}
@@ -336,11 +372,28 @@ export class VirtualScrollComponent {
 	// }
 
 	render() {
-		return [
-			<div class="total-padding"></div>,
-			<div class="scrollable-content">
-				<slot/>
-			</div>
-		];
+		if (this.parentScroll) {
+			return (
+				<div class="scroll-inner">
+					<div class="total-padding"></div>
+					<div class="scrollable-content">
+						<slot/>
+					</div>
+				</div>
+			);
+		} else {
+			return (
+				<div class="scroll-wrapper">
+					<div class="scroll-inner">
+						<div class="total-padding"></div>
+						<div class="scrollable-content">
+							<slot name="top"/>
+							<slot/>
+							<slot name="bottom"/>
+						</div>
+					</div>
+				</div>
+			);
+		}
 	}
 }
