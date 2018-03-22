@@ -80,9 +80,9 @@ declare global {
       buffer?: number;
       change?: (event: VirtualScrollChangeEvent) => void;
       end?: (event: VirtualScrollChangeEvent) => void;
+      ignoreClass?: string;
       items?: any[];
       parentScroll?: HTMLElement;
-      scrollAnimationTime?: number;
       start?: (event: VirtualScrollChangeEvent) => void;
       update?: (list: any[]) => void;
     }

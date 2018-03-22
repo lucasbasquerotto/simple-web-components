@@ -20,7 +20,7 @@ export class VirtualScrollExample {
 	private count = 0;
 	private amount = 400;//00;
 	private repeater = '.'.repeat(0).split('');
-	private intervals = [3000, 6000];
+	private intervals = [];//[3000, 6000];
 	private parentScroll: HTMLElement;
 
 	@State() items: Array<VirtualScrollExampleItem> = this.createItems();
