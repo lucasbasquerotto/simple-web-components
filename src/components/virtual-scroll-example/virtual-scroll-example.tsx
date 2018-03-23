@@ -18,10 +18,12 @@ export class VirtualScrollExample {
 	@Prop() last: string;
 
 	private count = 0;
-	private amount = 400;//00;
+	private amount = 40000;
 	private repeater = '.'.repeat(0).split('');
-	private intervals = [];//[3000, 6000];
+	private intervals = [3000, 6000];
 	private parentScroll: HTMLElement;
+	private buffer = 10;
+	private useParent = false;
 
 	@State() items: Array<VirtualScrollExampleItem> = this.createItems();
 	@State() scrollItems: Array<VirtualScrollExampleItem>;
@@ -46,7 +48,7 @@ export class VirtualScrollExample {
 	}
 
 	public componentDidLoad() {
-		this.parentScroll = null;//this.el.shadowRoot.querySelector('.container');
+		this.parentScroll = this.useParent ? this.el.shadowRoot.querySelector('.container') : null;
 
 		for (let interval of (this.intervals || [])) {
 			setTimeout(() => this.items = this.createItems(), interval);
@@ -67,7 +69,7 @@ export class VirtualScrollExample {
 					start={event => console.log('onStart', event)}
 					end={event => console.log('onEnd', event)}
 					parentScroll={this.parentScroll}
-					buffer={10}
+					buffer={this.buffer}
 				>
 					<div slot="top">
 						{this.repeater.map(() => <div>Top Section 0123456789 0123456789 0123456789<br/></div>)}
