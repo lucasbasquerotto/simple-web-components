@@ -18,9 +18,9 @@ export class VirtualScrollExample {
 	@Prop() last: string;
 
 	private count = 0;
-	private amount = 40000;
+	private amount = 400;//00;
 	private repeater = '.'.repeat(0).split('');
-	private intervals = [3000, 6000];
+	private intervals = [];//[3000, 6000];
 	private parentScroll: HTMLElement;
 	private buffer = 10;
 	private useParent = false;
@@ -64,10 +64,10 @@ export class VirtualScrollExample {
 				
 				<sp-virtual-scroll 
 					items={this.items} 
-					update={scrollItems => this.updateItems(scrollItems)}
-					change={event => console.log('onVirtualChange', event)}
-					start={event => console.log('onStart', event)}
-					end={event => console.log('onEnd', event)}
+					onUpdate={event => this.updateItems(event.detail)}
+					onChange={event => console.log('onVirtualChange', event.detail)}
+					onStart={event => console.log('onStart', event.detail)}
+					onEnd={event => console.log('onEnd', event.detail)}
 					parentScroll={this.parentScroll}
 					buffer={this.buffer}
 				>

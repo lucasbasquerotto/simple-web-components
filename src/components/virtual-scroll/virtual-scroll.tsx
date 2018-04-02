@@ -1,4 +1,4 @@
-import { Component, Element, Prop } from '@stencil/core';
+import { Component, Element, Event, Prop, EventEmitter } from '@stencil/core';
 
 // import * as tween from '@tweenjs/tween.js';
 
@@ -11,6 +11,17 @@ interface ChildInfo {
 	idx: number; 
 	totalHeight: number; 
 	itemHeight: number;
+}
+
+interface PositionsParams {
+	dataList: Array<ChildInfo>;
+	currentIdx: number;
+	heightAvg: number;
+	viewHeight: number;
+	buffer: number;
+	itemCount: number;
+	calculatePosition: boolean;
+	scrollTop: number;
 }
 
 interface PositionsInfo {
@@ -42,13 +53,13 @@ export class VirtualScrollComponent {
 	
 	@Prop() parentScroll: HTMLElement;
 
-	@Prop() update: (list: any[]) => void;	
+	@Event() update: EventEmitter<any[]>;
 
-	@Prop() change: (event: VirtualScrollChangeEvent) => void;
+	@Event() change: EventEmitter<VirtualScrollChangeEvent>;
 
-	@Prop() start: (event: VirtualScrollChangeEvent) => void;
+	@Event() start: EventEmitter<VirtualScrollChangeEvent>;
 
-	@Prop() end: (event: VirtualScrollChangeEvent) => void;
+	@Event() end: EventEmitter<VirtualScrollChangeEvent>;
 
 	private lastParentScroll: HTMLElement;
 	private lastItems: any[];
@@ -102,7 +113,18 @@ export class VirtualScrollComponent {
 			console.log('scrollWrapper', scrollWrapper);	
 	
 			if (scrollWrapper) {
+				// let timer = null;
+
 				const handler = () => {
+					// if (timer !== null) {
+					// 	clearTimeout(timer);        
+					// }
+
+					// timer = setTimeout(() => {
+					// 	console.log('scroll end');	
+					// 	this.update && this.update([...this.viewPortItems]);
+					// }, 1500);
+
 					console.log('scroll');	
 					this.previousIntervals.clear();				
 					this.refresh(false, true);
@@ -171,9 +193,11 @@ export class VirtualScrollComponent {
 			this.previousIntervals.clear();
 		}
 
+		let update = true;
+
 		if (changed && !forceUpdate) {
 			if (this.previousIntervals.has(`${start}|${end}`)) {
-				return;
+				update = false;
 			}
 		}
 
@@ -181,22 +205,22 @@ export class VirtualScrollComponent {
 			this.previousIntervals.add(`${start}|${end}`);
 		}
 
-		if (changed || forceUpdate) {
+		if (update && (changed || forceUpdate)) {
 			let items = this.items || [];
 			this.viewPortItems = items.slice(startBuffer, endBuffer);
-			this.update && this.update(this.viewPortItems);
+			this.update.emit(this.viewPortItems);
 
 			console.log('slice', startBuffer, start, end, endBuffer, changed);	
 
 			if (changed) {
 				// emit 'start' event
 				if ((start !== this.previousStart) && (start === 0)) {
-					this.start && this.start({ start, end });
+					this.start.emit({ start, end });
 				}
 	
 				// emit 'end' event
 				if ((end !== this.previousEnd) && (end === (items.length - 1))) {
-					this.end && this.end({ start, end });
+					this.end.emit({ start, end });
 				}
 	
 				this.previousStart = start;
@@ -283,7 +307,7 @@ export class VirtualScrollComponent {
 		let currentIdx = this.lastIdx || 0;
 		
 		if (calculatePosition) {			
-			currentIdx = VirtualScrollComponent.calculateCurrentIndex(dataList, heightAvg, scrollTop, this.beforeEmpty);
+			currentIdx = VirtualScrollComponent.calculateCurrentIndex(dataList, heightAvg, scrollTop);
 			this.lastIdx = currentIdx;
 			// this.lastScrollTop = scrollTop;
 			// console.log('calculatePosition', currentIdx, this.lastIdx);
@@ -291,7 +315,8 @@ export class VirtualScrollComponent {
 
 		let viewHeight = el.clientHeight || 0;
 
-		let positions = VirtualScrollComponent.calculatePositions(dataList, currentIdx, heightAvg, viewHeight, buffer, itemCount);
+		const params = { scrollTop, dataList, currentIdx, heightAvg, viewHeight, buffer, itemCount, calculatePosition };
+		let positions = VirtualScrollComponent.calculatePositions(params);
 		let { startBuffer, start, end, endBuffer, beforeEmpty, beforePadding, afterPadding, afterEmpty } = positions;
 
 		if (currentIdx !== positions.currentIdx) {
@@ -316,7 +341,7 @@ export class VirtualScrollComponent {
 				// console.log('newScrollTop2', newScrollTop, el.scrollTop, scrollTop, ' - ' , offsetTop, beforeEmpty, beforePadding);		
 				// el.scrollTop = newScrollTop;
 				let beforeEmptyNew = beforeEmpty + (newScrollTop - scrollTop);
-				const expectedIdx = VirtualScrollComponent.calculateCurrentIndex(dataList, heightAvg, newScrollTop, 0);
+				const expectedIdx = VirtualScrollComponent.calculateCurrentIndex(dataList, heightAvg, newScrollTop);
 				console.log('expectedIdx', expectedIdx, currentIdx, beforeEmptyNew, newScrollTop, scrollTop, ' - ' , offsetTop, beforeEmpty, beforePadding);
 			}
 	
@@ -335,7 +360,7 @@ export class VirtualScrollComponent {
 			console.log('viewHeight', viewHeight, offsetTop, heightAvg, ' - ', totalScrollHeight, scrollTop);
 	
 			if (totalScrollHeight !== this.totalScrollHeight) {
-				console.log('totalScrollHeight', totalScrollHeight, this.totalScrollHeight, scrollHeight, itemCount);
+				console.log('totalScrollHeight', totalScrollHeight, this.totalScrollHeight, scrollHeight, totalScrollHeight - this.totalScrollHeight, itemCount);
 	
 				let shim = this.getShimElement();
 				shim.style.height = `${scrollHeight}px`;
@@ -377,9 +402,8 @@ export class VirtualScrollComponent {
 		return dataList;
 	}
 
-	private static calculateCurrentIndex(dataList: Array<ChildInfo>, heightAvg: number, scrollTop: number, beforeEmpty: number) {
+	private static calculateCurrentIndex(dataList: Array<ChildInfo>, heightAvg: number, scrollTop: number) {
 		let currentIdx = 0;
-		if (beforeEmpty) {}
 		
 		if (scrollTop) {
 			let distance = Math.max(scrollTop, 0);
@@ -474,7 +498,9 @@ export class VirtualScrollComponent {
 		return { currentIdx, currentDistance }
 	}
 	
-	private static calculatePositions(dataList: Array<ChildInfo>, currentIdx: number, heightAvg: number, viewHeight: number, buffer: number, itemCount: number): PositionsInfo {
+	private static calculatePositions(params: PositionsParams): PositionsInfo {
+		let { scrollTop, dataList, currentIdx, heightAvg, viewHeight, buffer, itemCount, calculatePosition } = params;
+
 		const roundedIdx = Math.floor(currentIdx);
 
 		currentIdx = Math.max(currentIdx, 0);
@@ -491,7 +517,7 @@ export class VirtualScrollComponent {
 		let startBuffer = start - buffer;
 		startBuffer = Math.max(0, startBuffer);
 
-		let first = null;
+		let first = roundedIdx;
 		let last = startBuffer;
 		let beforeEmpty = 0;
 		let beforeEmptyCount = 0;
@@ -508,12 +534,15 @@ export class VirtualScrollComponent {
 				}
 
 				if (item.idx >= startBuffer) {
+					console.log('item.idx', startBuffer, item.idx, roundedIdx, totalHeight);
+					
 					beforePadding += totalHeight;
 				} else {
 					beforeEmptyCount += increment;
 					beforeEmpty += totalHeight;
 				}
 			} else if (item.idx === roundedIdx) {
+				console.log('item.idx', startBuffer, item.idx, roundedIdx, (item.totalHeight * (currentIdx - roundedIdx)));
 				beforePadding += (item.totalHeight * (currentIdx - roundedIdx));
 				afterPadding += (item.totalHeight * (roundedIdx + 1 - currentIdx));
 			} else {
@@ -552,18 +581,10 @@ export class VirtualScrollComponent {
 		let endBuffer = end + buffer;
 		endBuffer = Math.min(endBuffer, itemCount - 1);
 
+		console.log('beforePadding1', beforePadding,  Math.max((first - startBuffer) * heightAvg, 0));
+		
 		beforePadding += Math.max((first - startBuffer) * heightAvg, 0);
-		afterPadding += Math.max((endBuffer - last) * heightAvg, 0);
-
-		console.log('calcDimensions', 
-			startBuffer, start, end, endBuffer, 
-			' - ', 
-			beforeEmpty, beforePadding, 
-			' - ', 
-			afterPadding, afterEmpty,
-			' - ', 
-			first, startBuffer, first - startBuffer, beforeEmptyCount
-		);		
+		afterPadding += Math.max((endBuffer - last) * heightAvg, 0);	
 		
 		// let newIdx = currentIdx;
 
@@ -604,6 +625,28 @@ export class VirtualScrollComponent {
 
 		const afterAmountEmpty = Math.max(itemCount - 1 - (endBuffer + afterEmptyCount), 0);
 		afterEmpty += afterAmountEmpty * heightAvg;
+
+		if (!calculatePosition) {
+			beforeEmpty = Math.max(scrollTop - beforePadding, 0);
+		}
+
+		if (!startBuffer) {
+			beforeEmpty = 0;
+		}
+
+		if (endBuffer === (itemCount - 1)) {
+			afterEmpty = Math.max(beforeEmpty, 1);
+		}
+
+		console.log('calcDimensions', 
+			startBuffer, start, end, endBuffer, 
+			' - ', 
+			beforeEmpty, beforePadding, 
+			' - ', 
+			afterPadding, afterEmpty,
+			' - ', 
+			first, startBuffer, first - startBuffer, beforeEmptyCount, calculatePosition
+		);	
 
 		return { currentIdx, startBuffer, start, end, endBuffer, beforePadding, beforeEmpty, afterPadding, afterEmpty };
 	}

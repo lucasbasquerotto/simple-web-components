@@ -3,6 +3,9 @@
  * It contains typing information for all components that exist in this project
  * and imports for stencil collections that might be configured in your stencil.config.js file
  */
+
+import '@stencil/core';
+
 declare global {
   namespace JSX {
     interface Element {}
@@ -13,78 +16,81 @@ declare global {
   interface HTMLStencilElement extends HTMLElement {
     componentOnReady(): Promise<this>;
     componentOnReady(done: (ele?: this) => void): void;
+
+    forceUpdate(): void;
   }
 
   interface HTMLAttributes {}
 }
 
 import {
+  EventEmitter,
+} from '@stencil/core';
+import {
   VirtualScrollChangeEvent,
 } from './components/virtual-scroll/virtual-scroll';
 
-import {
-  VirtualScrollExample as VirtualScrollExample
-} from './components/virtual-scroll-example/virtual-scroll-example';
-
 declare global {
-  interface HTMLVirtualScrollExampleElement extends VirtualScrollExample, HTMLStencilElement {
+  interface HTMLVirtualScrollExampleElement extends HTMLStencilElement {
+    'first': string;
+    'last': string;
   }
   var HTMLVirtualScrollExampleElement: {
     prototype: HTMLVirtualScrollExampleElement;
     new (): HTMLVirtualScrollExampleElement;
   };
   interface HTMLElementTagNameMap {
-    "virtual-scroll-example": HTMLVirtualScrollExampleElement;
+    'virtual-scroll-example': HTMLVirtualScrollExampleElement;
   }
   interface ElementTagNameMap {
-    "virtual-scroll-example": HTMLVirtualScrollExampleElement;
+    'virtual-scroll-example': HTMLVirtualScrollExampleElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      "virtual-scroll-example": JSXElements.VirtualScrollExampleAttributes;
+      'virtual-scroll-example': JSXElements.VirtualScrollExampleAttributes;
     }
   }
   namespace JSXElements {
     export interface VirtualScrollExampleAttributes extends HTMLAttributes {
-      first?: string;
-      last?: string;
+      'first'?: string;
+      'last'?: string;
     }
   }
 }
 
 
-import {
-  VirtualScrollComponent as SpVirtualScroll
-} from './components/virtual-scroll/virtual-scroll';
-
 declare global {
-  interface HTMLSpVirtualScrollElement extends SpVirtualScroll, HTMLStencilElement {
+  interface HTMLSpVirtualScrollElement extends HTMLStencilElement {
+    'buffer': number;
+    'ignoreClass': string;
+    'items': any[];
+    'parentScroll': HTMLElement;
   }
   var HTMLSpVirtualScrollElement: {
     prototype: HTMLSpVirtualScrollElement;
     new (): HTMLSpVirtualScrollElement;
   };
   interface HTMLElementTagNameMap {
-    "sp-virtual-scroll": HTMLSpVirtualScrollElement;
+    'sp-virtual-scroll': HTMLSpVirtualScrollElement;
   }
   interface ElementTagNameMap {
-    "sp-virtual-scroll": HTMLSpVirtualScrollElement;
+    'sp-virtual-scroll': HTMLSpVirtualScrollElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      "sp-virtual-scroll": JSXElements.SpVirtualScrollAttributes;
+      'sp-virtual-scroll': JSXElements.SpVirtualScrollAttributes;
     }
   }
   namespace JSXElements {
     export interface SpVirtualScrollAttributes extends HTMLAttributes {
-      buffer?: number;
-      change?: (event: VirtualScrollChangeEvent) => void;
-      end?: (event: VirtualScrollChangeEvent) => void;
-      ignoreClass?: string;
-      items?: any[];
-      parentScroll?: HTMLElement;
-      start?: (event: VirtualScrollChangeEvent) => void;
-      update?: (list: any[]) => void;
+      'buffer'?: number;
+      'ignoreClass'?: string;
+      'items'?: any[];
+      'onChange'?: (event: CustomEvent<VirtualScrollChangeEvent>) => void;
+      'onEnd'?: (event: CustomEvent<VirtualScrollChangeEvent>) => void;
+      'onStart'?: (event: CustomEvent<VirtualScrollChangeEvent>) => void;
+      'onUpdate'?: (event: CustomEvent<any[]>) => void;
+      'parentScroll'?: HTMLElement;
     }
   }
 }

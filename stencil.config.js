@@ -3,8 +3,10 @@ const autoprefixer = require('autoprefixer');
 
 exports.config = {
   namespace: 'simple-web-components',
-  generateDistribution: true,
-  serviceWorker: false,
+  outputTargets: [
+	{ type: 'www' },
+	{ type: 'dist' }
+  ],
   enableCache: false,
   plugins: [
     postcss({
